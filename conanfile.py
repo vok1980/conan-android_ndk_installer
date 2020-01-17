@@ -22,6 +22,9 @@ class AndroidNDKInstallerConan(ConanFile):
                 "os": ["Android"],
                 "arch": ["x86", "x86_64", "armv7", "armv8"]}
 
+    options = {"libcxx_shared": [True, False]}
+    default_options = {'libcxx_shared': False}
+
     def configure(self):
         api_level = int(str(self.settings.os.api_level))
         if api_level < 16:
@@ -195,7 +198,7 @@ class AndroidNDKInstallerConan(ConanFile):
         self.env_info.ANDROID_PLATFORM = "android-%s" % self.settings.os.api_level
         self.env_info.ANDROID_TOOLCHAIN = "clang"
         self.env_info.ANDROID_ABI = self._android_abi
-        self.env_info.ANDROID_STL = "c++_static"
+        self.env_info.ANDROID_STL = "c++_shared" if self.options.libcxx_shared else "c++_static"
 
         self.env_info.CMAKE_FIND_ROOT_PATH_MODE_PROGRAM = "BOTH"
         self.env_info.CMAKE_FIND_ROOT_PATH_MODE_LIBRARY = "BOTH"
